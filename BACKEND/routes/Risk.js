@@ -11,7 +11,6 @@ router.route("/add").post((req,res)=>{
     const likelihood = req.body.likelihood;
     const reportedDate = req.body.reportedDate;
     const status = req.body.status;
-    const ITprocessAffected = req.body.ITprocessAffected;
     const KpiKri = req.body.KpiKri;
 
     const newRisk = new Risk({
@@ -23,7 +22,6 @@ router.route("/add").post((req,res)=>{
         likelihood,
         reportedDate,
         status,
-        ITprocessAffected,
         KpiKri 
     })
 
@@ -47,7 +45,7 @@ router.route("/").get((req,res)=>{
 router.route("/update/:id").put(async(req,res)=>{
     let riskId = req.params.id;
     //destucture method
-    const {riskCode,project,specificRisk,riskRating,impact,likelihood,reportedDate,status,ITprocessAffected,KpiKri} = req.body;
+    const {riskCode,project,specificRisk,riskRating,impact,likelihood,reportedDate,status,KpiKri} = req.body;
 
     const updateStudent = {
         riskCode,
@@ -58,7 +56,6 @@ router.route("/update/:id").put(async(req,res)=>{
         likelihood,
         reportedDate,
         status,
-        ITprocessAffected,
         KpiKri 
     }
 

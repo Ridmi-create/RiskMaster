@@ -35,10 +35,6 @@ const riskSchema = new Schema({
         type : String,
         required : true
     },
-    ITprocessAffected : {
-        type : String,
-        required : true
-    },
     KpiKri : {
         type : String,
         required : true
