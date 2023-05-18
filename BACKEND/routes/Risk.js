@@ -47,7 +47,7 @@ router.route("/update/:id").put(async(req,res)=>{
     //destucture method
     const {riskCode,project,specificRisk,riskRating,impact,likelihood,reportedDate,status,KpiKri} = req.body;
 
-    const updateStudent = {
+    const updateRisk = {
         riskCode,
         project,
         specificRisk,
@@ -70,7 +70,7 @@ router.route("/update/:id").put(async(req,res)=>{
 //delete a risk
 router.route("/delete/:id").delete(async(req,res)=>{
     let riskId = req.params.id;
-    await Risk.findByIdAndDelete(userId).then(()=>{
+    await Risk.findByIdAndDelete(riskId).then(()=>{
         res.status(200).send({status : "Risk deleted"});
     }).catch((err)=>{
         console.log(err);
@@ -82,7 +82,7 @@ router.route("/delete/:id").delete(async(req,res)=>{
 router.route("/get/:id").get(async(req,res)=>{
     let riskId = req.params.id;
     const risk = Risk.findById(riskId).then((risks)=>{
-        res.status(200).send({status : "Risk fetched", user : students});
+        res.status(200).send({status : "Risk fetched", risk : risks});
     }).catch((err)=>{
         console.log(err);
         res.status(500).send({status : "Error with get risk", error : err.message});

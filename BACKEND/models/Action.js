@@ -19,7 +19,7 @@ const actionSchema = new Schema({
         type : Date,
         required : true
     },
-    status : {
+    actionStatus : {
         type : String,
         required : true
     }

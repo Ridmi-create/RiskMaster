@@ -11,6 +11,10 @@ const riskOwnerSchema = new Schema({
         type : String,
         required : true
     },
+    riskOwnerPwd : {
+        type : String,
+        required : true
+    },
     riskOwnerDesignation : {
         type : String,
         required : true

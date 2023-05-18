@@ -11,6 +11,10 @@ const governanceSchema = new Schema({
         type : String,
         required : true
     },
+    governancePwd : {
+        type : String,
+        required : true
+    },
     governanceDesignation : {
         type : String,
         required : true
