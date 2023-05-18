@@ -29,3 +29,23 @@ app.listen(PORT, () => {
     console.log('Server is up and running on port:'+ PORT)
 });
 
+const riskRouter = require("./routes/Risk.js");
+app.use("/Risk",riskRouter);
+
+const actionRouter = require("./routes/Action.js");
+app.use("/Action",actionRouter);
+
+const adminRouter = require("./routes/Admin.js");
+app.use("/Admin",adminRouter);
+
+const departmentRouter = require("./routes/Department.js");
+app.use("/Department",departmentRouter);
+
+const governanceRouter = require("./routes/Governance.js");
+app.use("/Governance",governanceRouter);
+
+const rgsRouter = require("./routes/RGS.js");
+app.use("/RGS",rgsRouter);
+
+const riskOwnerRouter = require("./routes/RiskOwner.js");
+app.use("/RiskOwner",riskOwnerRouter);

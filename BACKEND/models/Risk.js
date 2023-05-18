@@ -28,7 +28,7 @@ const riskSchema = new Schema({
         required : true
     },
     reportedDate : {
-        type : Date,
+        type : String,
         required : true
     },
     status : {
