@@ -13,7 +13,7 @@ function Header() {
           <a class="nav-link active" aria-current="page" href="#">Notifications</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/Login">My Profile</a>
+          <a class="nav-link active" aria-current="page" href="/">My Profile</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">Logout</a>
