@@ -7,6 +7,16 @@ const riskOwnerSchema = new Schema({
         type : String,
         required : true
     },
+    riskOwnerPic: {
+        data: {
+            type: Buffer,
+            default: null
+          },
+          contentType: {
+            type: String,
+            default: 'image/jpg'
+          }
+    },
     riskOwnerName : {
         type : String,
         required : true
