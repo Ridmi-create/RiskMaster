@@ -1,5 +1,7 @@
+import axios from "axios";
 import React, { useState,useEffect } from "react";
-//import axios from "axios";
+
+
 import {
   Button,
   Card,
@@ -15,24 +17,37 @@ import {
 
 const AddNewGovernanceModal = ({ isOpen, toggle }) => {
   const userType = "Governance"
-  const [userID, setUserID] = useState("");
-  const [userName, setUserName] = useState("");
-  const [userPwd, setUserPwd] = useState("");
-  const [userDesignation, setUserDesignation] = useState("");
-  const [userMail, setUserMail] = useState("");
-  const [userPhone, setUserPhone] = useState("");
-  /*useEffect(() => {
-    const response = axios.get("http://localhost:8070/RiskOwner/getId");
-    console.log(response);
-    const numericPart = parseInt(response.substring(1));
-    const newNumericPart = numericPart + 1;
-    const newId = `R${String(newNumericPart).padStart(3, '0')}`;
-    setUserID(newId);
-  }, []);*/
+  const [governanceID, setGovernanceID] = useState("");
+  const [governanceName, setGovernanceName] = useState("");
+  const [governancePwd, setGovernancePwd] = useState("");
+  const [governanceDesignation, setGovernanceDesignation] = useState("");
+  const [governanceMail, setGovernanceMail] = useState("");
+  const [governancePhone, setGovernancePhone] = useState("");
+  
+  useEffect(() => {
+    const response = axios.get("http://localhost:8070/Governance/getId");
+    response.then((result) => {
+      // Access the value of the fulfilled Promise
+      const x = result.data; // Assuming the fulfilled value is assigned to x
+      console.log(x); // Do something with the value
+      setGovernanceID(x);
+    }).catch((error) => {
+      // Handle any errors that occurred during the Promise execution
+      console.log(error);
+    });
+  }, []);
 
 
   const handleSubmit = (e) => {
-
+      const newGovernance={
+        governanceID,
+        governanceName,
+        governancePwd,
+        governanceDesignation,
+        governanceMail,
+        governancePhone
+      }
+      const addGovernance = axios.post("http://localhost:8070/Governance/add",newGovernance);
   };
 
   return (
@@ -43,6 +58,7 @@ const AddNewGovernanceModal = ({ isOpen, toggle }) => {
       size="sm"
       isOpen={isOpen}
       toggle={toggle}
+      onSubmit={handleSubmit}
     >
       <div className="modal-body p-0">
         <Card className="bg-secondary shadow border-0">
@@ -59,12 +75,12 @@ const AddNewGovernanceModal = ({ isOpen, toggle }) => {
                   <FormGroup>
                     <span className="text-nowrap">User ID : </span>
                     <div className="d-flex flex-grow-1">
-                    <Button className="mr-2" color="primary" type="submit" style={{ width: "150px" }}>Get ID</Button>
+                    
                     <Input
                       className="form-control-alternative"
                       disabled
                       type="text"
-                      placeholder={userID}
+                      placeholder={governanceID}
                     />
                   </div>
                   </FormGroup>
@@ -77,6 +93,8 @@ const AddNewGovernanceModal = ({ isOpen, toggle }) => {
                       id="userPwd"
                       placeholder="1234"
                       type="text"
+                      value={governancePwd}
+                      onChange={(e) => setGovernancePwd(e.target.value)}
                     />
                   </FormGroup>
                 </Col>
@@ -90,6 +108,8 @@ const AddNewGovernanceModal = ({ isOpen, toggle }) => {
                       id="userName"
                       placeholder="Enter User Name"
                       type="text"
+                      value={governanceName}
+                      onChange={(e) => setGovernanceName(e.target.value)}
                     />
                   </FormGroup>
                 </Col>
@@ -101,6 +121,8 @@ const AddNewGovernanceModal = ({ isOpen, toggle }) => {
                       id="userEmail"
                       placeholder="Enter Your E-mail"
                       type="text"
+                      value={governanceMail}
+                      onChange={(e) => setGovernanceMail(e.target.value)}
                     />
                   </FormGroup>
                 </Col>
@@ -127,22 +149,14 @@ const AddNewGovernanceModal = ({ isOpen, toggle }) => {
                       id="designation"
                       placeholder="Ex:Project Manager"
                       type="text"
+                      value={governanceDesignation}
+                      onChange={(e) => setGovernanceDesignation(e.target.value)}
                     />
                   </FormGroup>
                 </Col>
               </Row>
               <Row>
-                <Col md="6">
-                  <FormGroup>
-                    <span className="text-nowrap">Department : </span>
-                    <Input className="form-control-alternative" type="select">
-                      <option value="">Select Department</option>
-                      <option value="department1">Department 1</option>
-                      <option value="department2">Department 2</option>
-                      <option value="department3">Department 3</option>
-                    </Input>
-                  </FormGroup>
-                </Col>
+                
                 <Col md="6">
                   <FormGroup>
                     <span className="text-nowrap">Phone : </span>
@@ -151,6 +165,8 @@ const AddNewGovernanceModal = ({ isOpen, toggle }) => {
                       id="userPhone"
                       placeholder="Ex:+94778388021"
                       type="text"
+                      value={governancePhone}
+                      onChange={(e) => setGovernancePhone(e.target.value)}
                     />
                   </FormGroup>
                 </Col>

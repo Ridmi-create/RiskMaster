@@ -3,13 +3,13 @@ import { useLocation, Route, Switch, Redirect } from "react-router-dom";
 // reactstrap components
 import { Container } from "reactstrap";
 // core components
-import AdminNavbar from "components/Navbars/AdminNavbar.js";
-import AdminFooter from "components/Footers/AdminFooter.js";
+import GovernanceNavbar from "components/Navbars/AdminNavbar.js";
+import GovernanceFooter from "components/Footers/AdminFooter.js";
 import Sidebar from "components/Sidebar/AdminSidebar.js";
 
-import routes from "routes.js";
+import routes from "gRoutes.js";
 
-const Admin = (props) => {
+const Governance = (props) => {
   const mainContent = React.useRef(null);
   const location = useLocation();
 
@@ -21,7 +21,7 @@ const Admin = (props) => {
 
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
-      if (prop.layout === "/admin") {
+      if (prop.layout === "/governance") {
         return (
           <Route
             path={prop.layout + prop.path}
@@ -53,26 +53,26 @@ const Admin = (props) => {
         {...props}
         routes={routes}
         logo={{
-          innerLink: "/admin/index",
+          innerLink: "/governance/index",
           imgSrc: require("../assets/img/brand/argon-react.png"),
           imgAlt: "..."
         }}
       />
       <div className="main-content" ref={mainContent}>
-        <AdminNavbar
+        <GovernanceNavbar
           {...props}
           brandText={getBrandText(props.location.pathname)}
         />
         <Switch>
           {getRoutes(routes)}
-          <Redirect from="*" to="/admin/index" />
+          <Redirect from="*" to="/governance/index" />
         </Switch>
         <Container fluid>
-          <AdminFooter />
+          <GovernanceFooter />
         </Container>
       </div>
     </>
   );
 };
 
-export default Admin;
+export default Governance;

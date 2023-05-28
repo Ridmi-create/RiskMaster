@@ -34,6 +34,10 @@ const rgsSchema = new Schema({
     remarks : {
         type : String,
         required : true
+    },
+    departmentCode : {
+        type : String,
+        required : true
     }
 });
 

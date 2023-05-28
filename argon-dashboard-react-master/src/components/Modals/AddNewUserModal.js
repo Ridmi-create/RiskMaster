@@ -1,5 +1,5 @@
-import React, { useState,useEffect } from "react";
-//import axios from "axios";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Button,
   Card,
@@ -15,24 +15,55 @@ import {
 
 const AddNewUserModal = ({ isOpen, toggle }) => {
   const userType = "Risk Owner"
-  const [userID, setUserID] = useState("");
-  const [userName, setUserName] = useState("");
-  const [userPwd, setUserPwd] = useState("");
-  const [userDesignation, setUserDesignation] = useState("");
-  const [userMail, setUserMail] = useState("");
-  const [userPhone, setUserPhone] = useState("");
-  /*useEffect(() => {
+  const [riskOwnerID, setUserID] = useState("");
+  const [riskOwnerName, setUserName] = useState("");
+  const [riskOwnerPwd, setUserPwd] = useState("");
+  const [riskOwnerDesignation, setUserDesignation] = useState("");
+  const [riskOwnerMail, setUserMail] = useState("");
+  const [riskOwnerPhone, setUserPhone] = useState("");
+  const [departmentNames, setDepartmentNames] = useState([]);
+  const [departmentCode, setSelectedDepartment] = useState('');
+
+  useEffect(() => {
     const response = axios.get("http://localhost:8070/RiskOwner/getId");
-    console.log(response);
-    const numericPart = parseInt(response.substring(1));
-    const newNumericPart = numericPart + 1;
-    const newId = `R${String(newNumericPart).padStart(3, '0')}`;
-    setUserID(newId);
-  }, []);*/
+    response.then((result) => {
+      // Access the value of the fulfilled Promise
+      const x = result.data; // Assuming the fulfilled value is assigned to x
+      console.log(x); // Do something with the value
+      setUserID(x);
+    }).catch((error) => {
+      // Handle any errors that occurred during the Promise execution
+      console.log(error);
+    });
+
+    const fetchDepartments = async () => {
+      try {
+        // Make a GET request to the API endpoint
+        const response = await axios.get('http://localhost:8070/Department/names');
+
+        // Extract the department names from the response
+        const { data } = response;
+        setDepartmentNames(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchDepartments();
+
+  }, []);
 
 
   const handleSubmit = (e) => {
-
+    const newRiskOwner = {
+      riskOwnerID,
+      riskOwnerName,
+      riskOwnerPwd,
+      riskOwnerDesignation,
+      riskOwnerMail,
+      riskOwnerPhone,
+      departmentCode
+    };
+    const addRiskOwner = axios.post("http://localhost:8070/RiskOwner/add",newRiskOwner);
   };
 
   return (
@@ -43,6 +74,7 @@ const AddNewUserModal = ({ isOpen, toggle }) => {
       size="sm"
       isOpen={isOpen}
       toggle={toggle}
+      onSubmit={handleSubmit}
     >
       <div className="modal-body p-0">
         <Card className="bg-secondary shadow border-0">
@@ -59,14 +91,14 @@ const AddNewUserModal = ({ isOpen, toggle }) => {
                   <FormGroup>
                     <span className="text-nowrap">User ID : </span>
                     <div className="d-flex flex-grow-1">
-                    <Button className="mr-2" color="primary" type="submit" style={{ width: "150px" }}>Get ID</Button>
-                    <Input
-                      className="form-control-alternative"
-                      disabled
-                      type="text"
-                      placeholder={userID}
-                    />
-                  </div>
+                      
+                      <Input
+                        className="form-control-alternative"
+                        disabled
+                        type="text"
+                        placeholder={riskOwnerID}
+                      />
+                    </div>
                   </FormGroup>
                 </Col>
                 <Col md="6">
@@ -77,6 +109,8 @@ const AddNewUserModal = ({ isOpen, toggle }) => {
                       id="userPwd"
                       placeholder="1234"
                       type="text"
+                      value={riskOwnerPwd}
+                      onChange={(e) => setUserPwd(e.target.value)}
                     />
                   </FormGroup>
                 </Col>
@@ -90,6 +124,8 @@ const AddNewUserModal = ({ isOpen, toggle }) => {
                       id="userName"
                       placeholder="Enter User Name"
                       type="text"
+                      value={riskOwnerName}
+                      onChange={(e) => setUserName(e.target.value)}
                     />
                   </FormGroup>
                 </Col>
@@ -101,6 +137,8 @@ const AddNewUserModal = ({ isOpen, toggle }) => {
                       id="userEmail"
                       placeholder="Enter Your E-mail"
                       type="text"
+                      value={riskOwnerMail}
+                      onChange={(e) => setUserMail(e.target.value)}
                     />
                   </FormGroup>
                 </Col>
@@ -109,7 +147,7 @@ const AddNewUserModal = ({ isOpen, toggle }) => {
                 <Col md="6">
                   <FormGroup>
                     <span className="text-nowrap">User Type : </span>
-                  
+
                     <Input
                       className="form-control-alternative"
                       disabled
@@ -127,6 +165,8 @@ const AddNewUserModal = ({ isOpen, toggle }) => {
                       id="designation"
                       placeholder="Ex:Project Manager"
                       type="text"
+                      value={riskOwnerDesignation}
+                      onChange={(e) => setUserDesignation(e.target.value)}
                     />
                   </FormGroup>
                 </Col>
@@ -135,11 +175,13 @@ const AddNewUserModal = ({ isOpen, toggle }) => {
                 <Col md="6">
                   <FormGroup>
                     <span className="text-nowrap">Department : </span>
-                    <Input className="form-control-alternative" type="select">
+                    <Input className="form-control-alternative" type="select" value={departmentNames.departmentCode} onChange={(e) => setSelectedDepartment(e.target.value)}>
                       <option value="">Select Department</option>
-                      <option value="department1">Department 1</option>
-                      <option value="department2">Department 2</option>
-                      <option value="department3">Department 3</option>
+                      {departmentNames.map((departmentName) => (
+                        <option key={departmentName.departmentCode} value={departmentName.departmentCode}>
+                          {departmentName.departmentName}
+                        </option>
+                      ))}
                     </Input>
                   </FormGroup>
                 </Col>
@@ -151,6 +193,8 @@ const AddNewUserModal = ({ isOpen, toggle }) => {
                       id="userPhone"
                       placeholder="Ex:+94778388021"
                       type="text"
+                      value={riskOwnerPhone}
+                      onChange={(e) => setUserPhone(e.target.value)}
                     />
                   </FormGroup>
                 </Col>

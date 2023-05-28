@@ -36,6 +36,10 @@ const riskOwnerSchema = new Schema({
     riskOwnerPhone : {
         type : String,
         required : true
+    },
+    departmentCode : {
+        type : String,
+        required : true
     }
 });
 

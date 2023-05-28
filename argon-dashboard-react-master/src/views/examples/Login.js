@@ -34,6 +34,7 @@ const Login = () => {
   async function handleSubmit(e) {
     e.preventDefault();
 
+    //Admin Login
     if (userType === "Admin") {
       try {
         const adminID = userID;
@@ -54,6 +55,72 @@ const Login = () => {
 
           // Redirect the user to the dashboard or protected route
           history.push('/admin/index');
+        } else {
+          setError('Invalid response format');
+        }
+        
+
+      } catch (e) {
+        setError(e.response.data.message);
+        alert(error);
+      }
+      
+    }
+
+    //Risk Owner Login
+    else if (userType === "RiskOwner") {
+      try {
+        const riskOwnerID = userID;
+        const riskOwnerPwd = userPassword;
+        const newLog = {
+          riskOwnerID,
+          riskOwnerPwd
+        };
+        console.log(newLog);
+
+        const response = await axios.post("http://localhost:8070/RiskOwner/login", newLog);
+
+        if (response && response.data && response.data.token) {
+          const { token } = response.data;
+
+          // Store the token in local storage or state for future requests
+          // Example: localStorage.setItem('token', token);
+
+          // Redirect the user to the dashboard or protected route
+          history.push('/riskOwner/index');
+        } else {
+          setError('Invalid response format');
+        }
+        
+
+      } catch (e) {
+        setError(e.response.data.message);
+        alert(error);
+      }
+      
+    }
+
+    //Governance Login
+    else if (userType === "Governance") {
+      try {
+        const governanceID = userID;
+        const governancePwd = userPassword;
+        const newLog = {
+          governanceID,
+          governancePwd
+        };
+        console.log(newLog);
+
+        const response = await axios.post("http://localhost:8070/Governance/login", newLog);
+
+        if (response && response.data && response.data.token) {
+          const { token } = response.data;
+
+          // Store the token in local storage or state for future requests
+          // Example: localStorage.setItem('token', token);
+
+          // Redirect the user to the dashboard or protected route
+          history.push('/governance/index');
         } else {
           setError('Invalid response format');
         }
@@ -120,7 +187,7 @@ const Login = () => {
                     <option selected>Select User Type</option>
                     <option value="Admin">Admin</option>
                     <option value="RiskOwner">Risk Owner</option>
-                    <option value="RiskGovernance">Risk Governance</option>
+                    <option value="Governance">Governance</option>
                   </select>
                 </InputGroup>
               </FormGroup>

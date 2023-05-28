@@ -38,6 +38,10 @@ const riskSchema = new Schema({
     KpiKri : {
         type : String,
         required : true
+    },
+    riskOwnerID : {
+        type : String,
+        required : true
     }
 });
 

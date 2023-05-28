@@ -11,6 +11,7 @@ router.route("/add").post((req,res)=>{
     const rgsDate = req.body.rgsDate;
     const rgsValue = req.body.rgsValue;
     const remarks = req.body.remarks;
+    const departmentCode = req.body.departmentCode;
 
     const newRGS = new RGS({
         rgsID,
@@ -20,7 +21,8 @@ router.route("/add").post((req,res)=>{
         mitigationTimeline,
         rgsDate,
         rgsValue,
-        remarks
+        remarks,
+        departmentCode
     })
 
     newRGS.save().then(()=>{
@@ -43,7 +45,7 @@ router.route("/").get((req,res)=>{
 router.route("/update/:id").put(async(req,res)=>{
     let rgsId = req.params.id;
     //destucture method
-    const {rgsID,idnRisk,idnImpLike,idnKpiKri,mitigationTimeline,rgsDate,rgsValue,remarks} = req.body;
+    const {rgsID,idnRisk,idnImpLike,idnKpiKri,mitigationTimeline,rgsDate,rgsValue,remarks, departmentCode} = req.body;
 
     const updateRGS = {
         rgsID,
@@ -53,7 +55,8 @@ router.route("/update/:id").put(async(req,res)=>{
         mitigationTimeline,
         rgsDate,
         rgsValue,
-        remarks
+        remarks,
+        departmentCode
     }
 
     const update  = await RGS.findByIdAndUpdate(rgsId,updateRGS).then(()=>{

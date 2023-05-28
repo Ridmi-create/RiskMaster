@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import {
   Button,
@@ -7,9 +8,6 @@ import {
   FormGroup,
   Form,
   Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
   Media,
   Row,
   Col,
@@ -17,29 +15,43 @@ import {
   Modal,
 } from "reactstrap";
 
-const EditUserModal = ({ isOpen, toggle }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const EditUserModal = ({ isOpen, toggle, selectedID, selectedName, selectedPwd, selectedMail, selectedPhone, selectedCode, selectedDesignation,toggleModal }) => {
+  const [riskOwnerID, setRiskOwnerID] = useState("");
+  const [riskOwnerName, setRiskOwnerName] = useState("");
+  const [riskOwnerPwd, setRiskOwnerPwd] = useState("");
+  const [riskOwnerDesignation, setRiskOwnerDesignation] = useState("");
+  const [riskOwnerMail, setRiskOwnerMail] = useState("");
+  const [riskOwnerPhone, setRiskOwnerPhone] = useState("");
+  const [departmentCode, setDepartmentCode] = useState("");
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
 
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add your logic for submitting the form
-    console.log("Email:", email);
-    console.log("Password:", password);
-    // Reset the form fields
-    setEmail("");
-    setPassword("");
-    // Close the modal
+
+    const updateRiskOwner = {
+      riskOwnerID: selectedID,
+      riskOwnerName,
+      riskOwnerPwd: selectedPwd,
+      riskOwnerDesignation,
+      riskOwnerMail,
+      riskOwnerPhone,
+      departmentCode: selectedCode
+    };
+
+    axios.put(`http://localhost:8070/RiskOwner/update/${selectedID}`, updateRiskOwner)
+      .then((response) => {
+        console.log(response.data);
+        // Handle the successful update here
+      })
+      .catch((error) => {
+        console.error(error);
+        // Handle the error here
+      });
+    toggleModal(); // Close the modal
     toggle();
   };
+
 
   return (
     <Modal
@@ -47,97 +59,103 @@ const EditUserModal = ({ isOpen, toggle }) => {
       size="sm"
       isOpen={isOpen}
       toggle={toggle}
+      onSubmit={handleSubmit}
     >
       <div className="modal-body p-0">
         <Card className="bg-secondary shadow border-0">
-        <CardHeader className="bg-transparent pb-5">
+          <CardHeader className="bg-transparent pb-5">
             <div className="text-muted mt-2 mb-3">
-            <bold>Edit User</bold>
+              <bold>Edit User</bold>
             </div>
             <div>
-            <Card className="card-stats mb-4 mb-lg-0">
-            <CardBody>
+              <Card className="card-stats mb-4 mb-lg-0">
+                <CardBody>
+                  <Row>
+                    <div className="col">
+                      <CardTitle className="text-muted mb-0">
+                        User ID:{selectedID}
+                      </CardTitle>
+                      <span className="h3 font-weight-bold mb-0">{selectedName}</span>
+                    </div>
+                    <Col className="col-auto">
+                      <div>
+                        <Media className="align-items-center">
+                          <a
+                            className="avatar rounded-circle mr-3"
+                            href="#pablo"
+                            onClick={(e) => e.preventDefault()}
+                          >
+                            <img
+                              alt="..."
+                              src={require("../../assets/img/theme/bootstrap.jpg")}
+                            />
+                          </a>
+                        </Media>
+                      </div>
+                    </Col>
+                  </Row>
+                </CardBody>
+              </Card>
+            </div>
+          </CardHeader>
+          <CardBody className="px-lg-5 py-lg-5">
+            <Form>
               <Row>
-                <div className="col">
-                  <CardTitle className="text-muted mb-0">
-                    UserID :
-                  </CardTitle>
-                  <span className="h3 font-weight-bold mb-0">Deshan Karunarathne</span>
-                </div>
-                <Col className="col-auto">
-                  <div>
-                  <Media className="align-items-center">
-                        <a
-                          className="avatar rounded-circle mr-3"
-                          href="#pablo"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <img
-                            alt="..."
-                            src={require("../../assets/img/theme/bootstrap.jpg")}
-                          />
-                        </a>
-                  </Media>
-                  </div>
+                <Col md="6">
+                  <FormGroup>
+                    <span className="text-nowrap">Name : </span>
+                    <Input
+                      className="form-control-alternative"
+                      id="exampleFormControlInput1"
+                      placeholder={selectedName}
+                      type="text"
+                      value={riskOwnerName}
+                      onChange={(e) => setRiskOwnerName(e.target.value)}
+                    />
+                  </FormGroup>
+                </Col>
+                <Col md="6">
+                  <FormGroup>
+                    <span className="text-nowrap">E-mail : </span>
+                    <Input
+                      className="form-control-alternative"
+                      id="exampleFormControlInput2"
+                      placeholder={selectedMail}
+                      type="email"
+                      value={riskOwnerMail}
+                      onChange={(e) => setRiskOwnerMail(e.target.value)}
+                    />
+                  </FormGroup>
                 </Col>
               </Row>
-              <p className="mt-3 mb-0 text-muted text-sm">
-                <span className="text-nowrap">User Type : </span>
-              </p>
-            </CardBody>
-            </Card>
-            </div>
-        </CardHeader>
-          <CardBody className="px-lg-5 py-lg-5">
-          <Form>
-          <Row>
-            <Col md="6">
-              <FormGroup>
-              <span className="text-nowrap">E-mail : </span>
-                <Input
-                  className="form-control-alternative"
-                  id="exampleFormControlInput1"
-                  placeholder="name@example.com"
-                  type="email"
-                />
-              </FormGroup>
-            </Col>
-            <Col md="6">
-              <FormGroup>
-              <span className="text-nowrap">Phone : </span>
-                <Input
-                  className="form-control-alternative"
-                  id="exampleFormControlInput2"
-                  placeholder="+94778388021"
-                  type="text"
-                />
-              </FormGroup>
-            </Col>
-          </Row>
-          <Row>
-            <Col md="6">
-              <FormGroup>
-              <span className="text-nowrap">Department : </span>
-              <Input className="form-control-alternative" type="select">
-                <option value="">Select Department</option>
-                <option value="department1">Department 1</option>
-                <option value="department2">Department 2</option>
-                <option value="department3">Department 3</option>
-              </Input>
-              </FormGroup>
-            </Col>
-            <Col md="6">
-              <FormGroup>
-              <span className="text-nowrap">Designation : </span>
-                <Input
-                  className="form-control-alternative"
-                  id="exampleFormControlInput2"
-                  placeholder="+94778388021"
-                  type="text"
-                />
-              </FormGroup>
-            </Col>
-          </Row>
+              <Row>
+                <Col md="6">
+                  <FormGroup>
+                    <span className="text-nowrap">Phone : </span>
+                    <Input
+                      className="form-control-alternative"
+                      id="exampleFormControlInput2"
+                      placeholder={selectedPhone}
+                      type="text"
+                      value={riskOwnerPhone}
+                      onChange={(e) => setRiskOwnerPhone(e.target.value)}
+                    />
+                  </FormGroup>
+                </Col>
+                <Col md="6">
+                  <FormGroup>
+                    <span className="text-nowrap">Designation : </span>
+                    <Input
+                      className="form-control-alternative"
+                      id="exampleFormControlInput2"
+                      placeholder={selectedDesignation}
+                      type="text"
+                      value={riskOwnerDesignation}
+                      onChange={(e) => setRiskOwnerDesignation(e.target.value)}
+                    />
+                  </FormGroup>
+                </Col>
+              </Row>
               <div className="text-center">
                 <Button className="my-4" color="primary" type="submit">
                   Save Changes

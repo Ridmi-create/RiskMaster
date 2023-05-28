@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 
+
+
 // reactstrap components
 import {
   Badge,
@@ -20,15 +22,36 @@ import EditUserModal from "components/Modals/EditUserModal.js";
 
 
 
+
 const UserManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [riskOwners, setRiskOwners] = useState([]);
-  const [userType, setUserType]=useState([]);
+  const [userType, setUserType] = useState([]);
   const [riskGovernance, setRiskGovernance] = useState([]);
+  const [selectedID, setSelectedID] = useState(null);
+  const [selectedPwd, setSelectedPwd] = useState(null);
+  const [selectedName, setSelectedName] = useState(null);
+  const [selectedMail, setSelectedMail] = useState(null);
+  const [selectedPhone, setSelectedPhone] = useState(null);
+  const [selectedCode, setSelectedCode] = useState(null);
+  const [selectedDesignation, setSelectedDesignation] = useState(null);
 
-  const toggleModal = () => {
+
+
+  const toggleModal = (id, name, password,mail,phone,code,designation) => {
+    setSelectedID(id);
+    setSelectedName(name);
+    setSelectedPwd(password);
+    setSelectedMail(mail);
+    setSelectedPhone(phone);
+    setSelectedCode(code);
+    setSelectedDesignation(designation);
+    console.log(selectedID);
+    //<EditUserModal isOpen={isModalOpen} toggle={toggleModal} selectedID={selectedID} />
     setIsModalOpen(!isModalOpen);
   };
+  
+
 
   //Fetch Risk Ownwrs
   useEffect(() => {
@@ -61,11 +84,13 @@ const UserManagement = () => {
     };
 
     fetchRiskGovernance();
-  }, []); 
+  }, []);
 
 
   return (
     <>
+
+
       <UserManagementHeader />
       {/* Page content */}
       <Container className="mt--7" fluid>
@@ -127,8 +152,15 @@ const UserManagement = () => {
                             <i className="fas fa-ellipsis-v" />
                           </DropdownToggle>
                           <DropdownMenu className="dropdown-menu-arrow" right>
-                            <DropdownItem href="#pablo" onClick={toggleModal}>
-                              Edit User
+                            <DropdownItem href="#pablo" onClick={() => toggleModal(
+                              riskOwner.riskOwnerID,
+                              riskOwner.riskOwnerName,
+                              riskOwner.riskOwnerPwd,
+                              riskOwner.riskOwnerMail,
+                              riskOwner.riskOwnerPhone,
+                              riskOwner.departmentCode,
+                              riskOwner.riskOwnerDesignation)}>
+                              Edit User 
                             </DropdownItem>
                             <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
                               Delete User
@@ -196,6 +228,20 @@ const UserManagement = () => {
           </div>
         </Row>
       </Container>
+      {isModalOpen && (
+        <EditUserModal
+          isOpen={isModalOpen}
+          toggle={toggleModal}
+          selectedID={selectedID}
+          selectedPwd={selectedPwd}
+          selectedName={selectedName}
+          selectedMail={selectedMail}
+          selectedPhone={selectedPhone}
+          selectedCode={selectedCode}
+          selectedDesignation={selectedDesignation}
+          toggleModal={toggleModal} 
+        />
+      )}
     </>
   );
 

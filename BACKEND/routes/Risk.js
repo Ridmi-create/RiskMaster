@@ -12,6 +12,7 @@ router.route("/add").post((req,res)=>{
     const reportedDate = req.body.reportedDate;
     const status = req.body.status;
     const KpiKri = req.body.KpiKri;
+    const riskOwnerID = req.body.riskOwnerID;
 
     const newRisk = new Risk({
         riskCode,
@@ -22,7 +23,8 @@ router.route("/add").post((req,res)=>{
         likelihood,
         reportedDate,
         status,
-        KpiKri 
+        KpiKri,
+        riskOwnerID 
     })
 
     newRisk.save().then(()=>{
@@ -45,7 +47,7 @@ router.route("/").get((req,res)=>{
 router.route("/update/:id").put(async(req,res)=>{
     let riskId = req.params.id;
     //destucture method
-    const {riskCode,project,specificRisk,riskRating,impact,likelihood,reportedDate,status,KpiKri} = req.body;
+    const {riskCode,project,specificRisk,riskRating,impact,likelihood,reportedDate,status,KpiKri, riskOwnerID} = req.body;
 
     const updateRisk = {
         riskCode,
@@ -56,7 +58,8 @@ router.route("/update/:id").put(async(req,res)=>{
         likelihood,
         reportedDate,
         status,
-        KpiKri 
+        KpiKri,
+        riskOwnerID 
     }
 
     const update  = await Risk.findByIdAndUpdate(riskId,updateRisk).then(()=>{

@@ -1,6 +1,7 @@
 const router = require("express").Router();
 let RiskOwner = require("../models/RiskOwner");
 const multer = require('multer');
+const jwt = require('jsonwebtoken');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -22,6 +23,7 @@ router.route("/add").post((req, res) => {
     const riskOwnerDesignation = req.body.riskOwnerDesignation;
     const riskOwnerMail = req.body.riskOwnerMail;
     const riskOwnerPhone = req.body.riskOwnerPhone;
+    const departmentCode = req.body.departmentCode;
 
     const newRiskOwner = new RiskOwner({
         riskOwnerID,
@@ -29,7 +31,8 @@ router.route("/add").post((req, res) => {
         riskOwnerPwd,
         riskOwnerDesignation,
         riskOwnerMail,
-        riskOwnerPhone
+        riskOwnerPhone,
+        departmentCode
     })
 
     newRiskOwner.save().then(() => {
@@ -61,10 +64,16 @@ router.route("/").get((req, res) => {
 })
 
 //update a riskowner by id
-router.route("/update/:id").put(async (req, res) => {
-    let riskOwnerId = req.params.id;
+router.route("/update/:riskOwnerID").put(async (req, res) => {
+    let riskOwnerId = req.params.riskOwnerID;
     //destucture method
-    const { riskOwnerID, riskOwnerName, riskOwnerPwd, riskOwnerDesignation, riskOwnerMail, riskOwnerPhone } = req.body;
+    const riskOwnerID = req.body.riskOwnerID;
+    const riskOwnerName = req.body.riskOwnerName;
+    const riskOwnerPwd = req.body.riskOwnerPwd;
+    const riskOwnerDesignation = req.body.riskOwnerDesignation;
+    const riskOwnerMail = req.body.riskOwnerMail;
+    const riskOwnerPhone = req.body.riskOwnerPhone;
+    const departmentCode = req.body.departmentCode;
 
     const updateRiskOwner = {
         riskOwnerID,
@@ -72,15 +81,21 @@ router.route("/update/:id").put(async (req, res) => {
         riskOwnerPwd,
         riskOwnerDesignation,
         riskOwnerMail,
-        riskOwnerPhone
+        riskOwnerPhone,
+        departmentCode
     }
 
-    const update = await RiskOwner.findByIdAndUpdate(riskOwnerId, updateRiskOwner).then(() => {
-        res.status(200).send({ status: "RiskOwner updated" });
-    }).catch((err) => {
-        console.log(err);
-        res.status(500).send({ status: "Error with updating data", error: err.message });
-    })
+    const updatedRiskOwner = await RiskOwner.findOneAndUpdate(
+      { riskOwnerID }, // Filter by name
+      updateRiskOwner, // Updated data
+      { new: true } // Return the modified document
+    );
+    
+    if (!updatedRiskOwner) {
+      return res.status(404).json({ error: 'RiskOwner not found' });
+    }
+    
+    res.status(200).json({ status: 'RiskOwner updated', riskOwner: updatedRiskOwner });
 })
 
 //delete a riskowner
@@ -111,7 +126,10 @@ const getLastAddedRiskOwnerID = async () => {
       const lastAddedRecord = await RiskOwner.findOne({}, { riskOwnerID: 1 }).sort({ _id: -1 });
       if (lastAddedRecord) {
         const lastAddedRiskOwnerID = lastAddedRecord.riskOwnerID;
-        return lastAddedRiskOwnerID;
+        const numericPart = parseInt(lastAddedRiskOwnerID.substring(1));
+        const newNumericPart = numericPart + 1;
+        const newId = `R${String(newNumericPart).padStart(3, '0')}`;
+        return newId;
       }
       return 'No records found.';
     } catch (error) {
@@ -119,12 +137,50 @@ const getLastAddedRiskOwnerID = async () => {
     }
   };
   
-  router.route('/getId').get(async (req, res) => {
+  router.route('/getId').get(async (req,res) => {
     try {
       const lastAddedRiskOwnerID = await getLastAddedRiskOwnerID();
-      res.json({ lastAddedRiskOwnerID });
+      res.json(lastAddedRiskOwnerID);
     } catch (error) {
       res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Login route
+router.post("/login", async (req, res) => {
+    const { riskOwnerID, riskOwnerPwd } = req.body;
+    console.log("Came")
+    console.log(riskOwnerID);
+  
+    try {
+      // Find the user with the provided email in the database
+      const riskOwner = await RiskOwner.findOne({ riskOwnerID });
+  
+      // Check if the user exists
+      if (!riskOwner) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      else{
+        console.log("user found");
+      }
+  
+      // Compare the provided password with the hashed password in the database
+      if (!(riskOwner.riskOwnerPwd===riskOwnerPwd)) {
+        return res.status(401).json({ message: 'Invalid credentials' });
+      }
+      else{
+        console.log("Password Match");
+      }
+  
+      // If passwords match, generate a JSON Web Token (JWT)
+      const token = jwt.sign({ riskOwnerID: riskOwner._id }, 'your-secret-key', { expiresIn: '1h' });
+      //res.status(200).send({status : "Admin logged" });
+  
+      // Return the token to the client
+      res.json({ token });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error' });
     }
   });
 
