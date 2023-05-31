@@ -28,7 +28,7 @@ const riskSchema = new Schema({
         required : true
     },
     reportedDate : {
-        type : String,
+        type : Date,
         required : true
     },
     status : {
@@ -39,7 +39,19 @@ const riskSchema = new Schema({
         type : String,
         required : true
     },
+    actionPlan : {
+        type : String,
+        required : true
+    },
+    estimatedEndDate : {
+        type : Date,
+        required : true
+    },
     riskOwnerID : {
+        type : String,
+        required : true
+    },
+    departmentCode : {
         type : String,
         required : true
     }

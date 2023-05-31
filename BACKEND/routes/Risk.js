@@ -12,7 +12,11 @@ router.route("/add").post((req,res)=>{
     const reportedDate = req.body.reportedDate;
     const status = req.body.status;
     const KpiKri = req.body.KpiKri;
+    const actionPlan = req.body.actionPlan;
+    const estimatedEndDate = req.body.estimatedEndDate;
     const riskOwnerID = req.body.riskOwnerID;
+    const departmentCode = req.body.departmentCode;
+    
 
     const newRisk = new Risk({
         riskCode,
@@ -24,7 +28,11 @@ router.route("/add").post((req,res)=>{
         reportedDate,
         status,
         KpiKri,
-        riskOwnerID 
+        actionPlan,
+        estimatedEndDate,
+        riskOwnerID,
+        departmentCode
+       
     })
 
     newRisk.save().then(()=>{
@@ -47,7 +55,7 @@ router.route("/").get((req,res)=>{
 router.route("/update/:id").put(async(req,res)=>{
     let riskId = req.params.id;
     //destucture method
-    const {riskCode,project,specificRisk,riskRating,impact,likelihood,reportedDate,status,KpiKri, riskOwnerID} = req.body;
+    const {riskCode,project,specificRisk,riskRating,impact,likelihood,reportedDate,status,KpiKri,actionPlan,estimatedEndDate, riskOwnerID, departmentCode} = req.body;
 
     const updateRisk = {
         riskCode,
@@ -59,7 +67,10 @@ router.route("/update/:id").put(async(req,res)=>{
         reportedDate,
         status,
         KpiKri,
-        riskOwnerID 
+        actionPlan,
+        estimatedEndDate,
+        riskOwnerID,
+        departmentCode
     }
 
     const update  = await Risk.findByIdAndUpdate(riskId,updateRisk).then(()=>{
@@ -91,6 +102,29 @@ router.route("/get/:id").get(async(req,res)=>{
         res.status(500).send({status : "Error with get risk", error : err.message});
     })
 })
+
+//get risk by department
+router.route("/getD/:departmentCode").get(async (req, res) => {
+    try {
+      let departmentCode = req.params.departmentCode;
+      console.log(departmentCode);
+      const query = { departmentCode: departmentCode };
+      const docs = await Risk.find(query).exec();
+  
+      console.log('Fetched records:');
+      console.log(docs);
+  
+      // Send the fetched records as the API response
+      res.json(docs);
+    } catch (err) {
+      console.error('Failed to fetch records:', err);
+      res.status(500).json({ error: 'Failed to fetch records' });
+    }
+  });
+  
+  
+  
+  
 
 
 

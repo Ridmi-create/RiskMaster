@@ -110,9 +110,9 @@ router.route("/delete/:id").delete(async (req, res) => {
 })
 
 //get one riskowner
-router.route("/get/:id").get(async (req, res) => {
+router.route("/get/:riskOwnerId").get(async (req, res) => {
     let riskOwnerId = req.params.id;
-    const riskOwner = RiskOwner.findById(riskOwnerId).then((riskOwners) => {
+    const riskOwner = RiskOwner.findOne(riskOwnerId).then((riskOwners) => {
         res.status(200).send({ status: "RiskOwner fetched", riskOwner: riskOwners });
     }).catch((err) => {
         console.log(err);

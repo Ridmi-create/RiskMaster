@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import Datepicker from "../../assets/Datepicker.js";
-//import axios from "axios";
+import axios from "axios";
 import {
   Button,
   Card,
@@ -18,25 +18,58 @@ import {
 } from "reactstrap";
 
 const AddNewRiskModal = ({ isOpen, toggle }) => {
-  const userType = "Governance"
-  const [userID, setUserID] = useState("");
-  const [userName, setUserName] = useState("");
-  const [userPwd, setUserPwd] = useState("");
-  const [userDesignation, setUserDesignation] = useState("");
-  const [userMail, setUserMail] = useState("");
-  const [userPhone, setUserPhone] = useState("");
-  /*useEffect(() => {
-    const response = axios.get("http://localhost:8070/RiskOwner/getId");
-    console.log(response);
-    const numericPart = parseInt(response.substring(1));
-    const newNumericPart = numericPart + 1;
-    const newId = `R${String(newNumericPart).padStart(3, '0')}`;
-    setUserID(newId);
-  }, []);*/
+  const [riskCode, setRiskCode] = useState("");
+  const [project, setProject] = useState("");
+  const [specificRisk, setSpecificRisk] = useState("");
+  const [riskRating, setRiskRating] = useState("");
+  const [impact, setImpact] = useState("");
+  const [likelihood, setLikelihood] = useState("");
+  const [status, setStatus] = useState("");
+  const [KpiKri, setKpiKri] = useState("");
+  const [actionPlan, setActionPlan] = useState("");
+  const [riskOwnerID, setRiskOwnerID] = useState("");
+  const [departmentCode, setDepartmentCode] = useState("");
+  
+    useEffect(() => {
+      const response = axios.get("http://localhost:8070/Risk/getId");
+      response.then((result) => {
+        // Access the value of the fulfilled Promise
+        const x = result.data; // Assuming the fulfilled value is assigned to x
+        console.log(x); // Do something with the value
+        setRiskCode(x);
+      }).catch((error) => {
+        // Handle any errors that occurred during the Promise execution
+        console.log(error);
+      });
+    }, []);
+
+    const calculateRiskRating = () => {
+      const impact = document.getElementById('impact');
+      const likelihood = document.getElementById('likelihood');
+      const impactValue = parseInt(impact.value);
+      const likelihoodValue = parseInt(likelihood.value);
+      const calculatedRiskRating = impactValue * likelihoodValue;
+      setRiskRating(calculatedRiskRating);
+    };
 
 
   const handleSubmit = (e) => {
-
+    const newRisk={
+        riskCode,
+        project,
+        specificRisk,
+        riskRating,
+        impact,
+        likelihood,
+        reportedDate,
+        status,
+        KpiKri,
+        actionPlan,
+        estimatedEndDate,
+        riskOwnerID,
+        departmentCode
+    }
+    const addRisk = axios.post("http://localhost:8070/Risk/add",newRisk);
   };
 
   const [reportedDate, setReportedDate] = useState(null);
@@ -77,12 +110,11 @@ const AddNewRiskModal = ({ isOpen, toggle }) => {
                   <FormGroup>
                     <span className="text-nowrap">Risk Code: </span>
                     <div className="d-flex flex-grow-1">
-                    <Button className="mr-2" color="primary" type="submit" style={{ width: "150px" }}>Get Code</Button>
                     <Input
                       className="form-control-alternative"
                       disabled
                       type="text"
-                      placeholder="riskCode"
+                      placeholder={riskCode}
                     />
                   </div>
                   </FormGroup>
@@ -92,7 +124,7 @@ const AddNewRiskModal = ({ isOpen, toggle }) => {
                     <span className="text-nowrap">Project/Function: </span>
                     <Input
                       className="form-control-alternative"
-                      id="userPwd"
+                      id="project"
                       placeholder="Eg : Web App"
                       type="text"
                     />
@@ -105,9 +137,9 @@ const AddNewRiskModal = ({ isOpen, toggle }) => {
                     <span className="text-nowrap">Specific Risk:</span>
                     <Input
                     className="form-control-alternative"
-                    id="longTextArea"
+                    id="specificRisk"
                     type="textarea"
-                    rows={4}
+                    rows={3}
                     placeholder="Define the Risk here.. Eg : Resource Unavailability"
                     />
                 </FormGroup>
@@ -132,7 +164,7 @@ const AddNewRiskModal = ({ isOpen, toggle }) => {
                     <span className="text-nowrap">KPI/KRI: </span>
                     <Input
                       className="form-control-alternative"
-                      id="userPwd"
+                      id="KpiKri"
                       placeholder="Eg : On Time Delivery"
                       type="text"
                     />
@@ -143,24 +175,24 @@ const AddNewRiskModal = ({ isOpen, toggle }) => {
                 <Col md="4">
                   <FormGroup>
                   <span className="text-nowrap">Impact: </span>
-                  <Input className="form-control-alternative" type="select">
+                  <Input className="form-control-alternative" type="select" id="impact">
                         <option value="">Select Value</option>
-                        <option value="department1">1 : </option>
-                        <option value="department2">2 : </option>
-                        <option value="department3">3 : </option>
-                        <option value="department3">4 : </option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
                   </Input>
                   </FormGroup>
                 </Col>
                 <Col md="4">
                   <FormGroup>
                     <span className="text-nowrap">Likelihood: </span>
-                    <Input className="form-control-alternative" type="select">
+                    <Input className="form-control-alternative" type="select" id="likelihood">
                         <option value="">Select Value</option>
-                        <option value="department1">1 : </option>
-                        <option value="department2">2 : </option>
-                        <option value="department3">3 : </option>
-                        <option value="department3">4 : </option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
                   </Input>
                   </FormGroup>
                 </Col>
@@ -170,9 +202,10 @@ const AddNewRiskModal = ({ isOpen, toggle }) => {
                     <Input
                       className="form-control-alternative"
                       disabled
-                      id="userPwd"
-                      placeholder="16"
+                      id="riskRating"
+                      placeholder="will update"
                       type="text"
+                      value={riskRating}
                     />
                   </FormGroup>
                 </Col>
@@ -183,9 +216,9 @@ const AddNewRiskModal = ({ isOpen, toggle }) => {
                     <span className="text-nowrap">Action Plan:</span>
                     <Input
                     className="form-control-alternative"
-                    id="longTextArea"
+                    id="actionPlan"
                     type="textarea"
-                    rows={4}
+                    rows={3}
                     placeholder="Define mitigation action plan here.. Eg : Plan discussion with team"
                     />
                 </FormGroup>
