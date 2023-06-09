@@ -1,4 +1,5 @@
-
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Button,
   Card,
@@ -13,6 +14,12 @@ import {
 } from "reactstrap";
 // core components
 import UserHeader from "components/Headers/UserHeader.js";
+
+/*useEffect(() => {
+  const response =axios.get(`http://localhost:8070/Risk/getD/${departmentCode}`);
+
+  
+}, []);*/
 
 const Profile = () => {
   return (
