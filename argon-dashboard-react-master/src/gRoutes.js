@@ -6,7 +6,7 @@ import Login from "views/examples/Login.js";
 import Tables from "views/examples/Tables.js";
 import Icons from "views/examples/Icons.js";
 import RGSs from "views/examples/RGS.js";
-import DepartmentManagement from "views/examples/DepartmentManagement.js";
+import RiskConsolidation from "views/examples/RiskConsolidation.js";
 
 var gRoutes = [
   {
@@ -27,10 +27,10 @@ var gRoutes = [
 
   
   {
-    path: "/DepartmentManagement",
-    name: "Departments",
+    path: "/RiskConsolidation",
+    name: "Risk Consolidation",
     icon: "ni ni-building text-primary",
-    component: DepartmentManagement,
+    component: RiskConsolidation,
     layout: "/governance"
   },
   {
@@ -48,13 +48,6 @@ var gRoutes = [
     component: Login,
     layout: "/auth"
   },
-  {
-    path: "/Icons",
-    name: "Icons",
-    icon: "ni ni-circle-08 text-pink",
-    component: Icons,
-    layout: "/governance"
-  }
- 
+  
 ];
 export default gRoutes;

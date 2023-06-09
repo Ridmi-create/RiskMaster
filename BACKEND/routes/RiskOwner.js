@@ -99,15 +99,15 @@ router.route("/update/:riskOwnerID").put(async (req, res) => {
 })
 
 //delete a riskowner
-router.route("/delete/:id").delete(async (req, res) => {
-    let riskOwnerId = req.params.id;
-    await RiskOwner.findByIdAndDelete(riskOwnerId).then(() => {
+/*router.route("/delete/:riskOwnerID").delete(async (req, res) => {
+    let riskOwnerId = req.params.riskOwnerID;
+    await RiskOwner.findOneAndDelete(riskOwnerId).then(() => {
         res.status(200).send({ status: "RiskOwner deleted" });
     }).catch((err) => {
         console.log(err);
         res.status(500).send({ status: "Error with delete RiskOwner", error: err.message });
     })
-})
+})*/
 
 //get one riskowner
 router.route("/get/:riskOwnerId").get(async (req, res) => {
@@ -181,6 +181,23 @@ router.post("/login", async (req, res) => {
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Server error' });
+    }
+  });
+
+  //get risk owner name
+  router.route("/name/:riskOwnerID").get(async (req, res) => {
+    try {
+      
+      console.log("Came name")
+      let riskOwnerID = req.params.riskOwnerID;
+      
+      const query = {riskOwnerID: riskOwnerID};
+      const riskOwner = await RiskOwner.findOne(query);
+      res.json(riskOwner);
+
+    } catch (err) {
+      console.error('Failed', err);
+      res.status(500).json({ error: 'Failed' });
     }
   });
 

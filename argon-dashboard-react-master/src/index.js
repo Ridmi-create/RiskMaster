@@ -10,10 +10,12 @@ import AdminLayout from "layouts/Admin.js";
 import AuthLayout from "layouts/Auth.js";
 import RiskOwnerLayout from "layouts/RiskOwner.js";
 import GovernanceLayout from "layouts/Governance.js";
+import { LoginDataProvider } from "views/examples/LoginDataContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
+  <LoginDataProvider>
   <BrowserRouter>
     <Switch>
       <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
@@ -23,4 +25,5 @@ root.render(
       <Redirect from="/" to="/auth/login" />
     </Switch>
   </BrowserRouter>
+  </LoginDataProvider>
 );

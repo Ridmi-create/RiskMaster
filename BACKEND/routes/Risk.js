@@ -121,6 +121,26 @@ router.route("/getD/:departmentCode").get(async (req, res) => {
       res.status(500).json({ error: 'Failed to fetch records' });
     }
   });
+
+  //get risk by riskOwnerID
+router.route("/getR/:riskOwnerID").get(async (req, res) => {
+    try {
+      console.log("came to getR")
+      let riskOwnerID = req.params.riskOwnerID;
+      
+      const query = { riskOwnerID: riskOwnerID};
+      const docs = await Risk.find(query).exec();
+  
+      console.log('Fetched records:');
+      console.log(docs);
+  
+      // Send the fetched records as the API response
+      res.json(docs);
+    } catch (err) {
+      console.error('Failed to fetch records:', err);
+      res.status(500).json({ error: 'Failed to fetch records' });
+    }
+  });
   
   
   

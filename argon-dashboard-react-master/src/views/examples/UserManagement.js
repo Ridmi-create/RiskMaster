@@ -86,6 +86,9 @@ const UserManagement = () => {
     fetchRiskGovernance();
   }, []);
 
+ 
+
+
 
   return (
     <>
@@ -162,9 +165,7 @@ const UserManagement = () => {
                               riskOwner.riskOwnerDesignation)}>
                               Edit User 
                             </DropdownItem>
-                            <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
-                              Delete User
-                            </DropdownItem>
+                           
                           </DropdownMenu>
                         </UncontrolledDropdown>
                       </td>
@@ -210,9 +211,7 @@ const UserManagement = () => {
                             <DropdownItem href="#pablo" onClick={toggleModal}>
                               Edit User
                             </DropdownItem>
-                            <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
-                              Delete User
-                            </DropdownItem>
+                            
                           </DropdownMenu>
                         </UncontrolledDropdown>
                       </td>

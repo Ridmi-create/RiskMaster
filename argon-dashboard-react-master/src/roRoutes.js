@@ -8,16 +8,21 @@ import Icons from "views/examples/Icons.js";
 import MyRisks from "views/examples/MyRisks.js";
 import Reports from "views/examples/Reports.js";
 
+
+
 var roRoutes = [
   {
+    
     path: "/index",
     name: "Overview",
     icon: "ni ni-tv-2 text-primary",
     component: Index,
-    layout: "/riskOwner"
+    layout: "/riskOwner",
+    
   },
 
   {
+   
     path: "/MyRisks",
     name: "My Risks",
     icon: "ni ni-world-2 text-primary",

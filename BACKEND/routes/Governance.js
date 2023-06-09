@@ -145,5 +145,21 @@ const getLastAddedGovernanceID = async () => {
     }
   });
 
+  //get governances name
+  router.route("/name/:governanceID").get(async (req, res) => {
+    try {
+      
+      let governanceID = req.params.governanceID;
+      
+      const query = { governanceID: governanceID};
+      const governance = await Governance.findOne(query);
+      res.json(governance);
+
+    } catch (err) {
+      console.error('Failed', err);
+      res.status(500).json({ error: 'Failed' });
+    }
+  });
+
 
 module.exports = router;

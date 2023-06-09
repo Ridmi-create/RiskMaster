@@ -17,23 +17,23 @@ import {
 // core components
 import MyRisksHeader from "components/Headers/MyRisksHeader.js";
 import EditRiskModal from "components/Modals/EditRiskModal.js";
-import { LoginDataContext } from "./LoginDataContext";
+//import { LoginDataContext } from "./LoginDataContext";
 
 
 
-const MyRisks = () => {
+const RiskConsolidation = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [risks, setRisks] = useState([]);
-  const { loginData } = useContext(LoginDataContext);
-  const [riskOwnerID, setRiskOwnerID] = useState(loginData.userID);
-  const [userName, setUserName] = useState(loginData.userName);
+  //const { loginData } = useContext(LoginDataContext);
+  //const [riskOwnerID, setRiskOwnerID] = useState(loginData.userID);
+  //const [userName, setUserName] = useState(loginData.userName);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
 
   //Fetch Risk 
-  useEffect(() => {
+  {/*useEffect(() => {
     console.log("came");
     console.log(userName);
     const fetchRisks = async () => {
@@ -53,7 +53,7 @@ const MyRisks = () => {
   }, []);
 
 
-
+*/}
 
   return (
     <>
@@ -131,4 +131,4 @@ const MyRisks = () => {
 };
 
 
-export default MyRisks;
+export default RiskConsolidation;

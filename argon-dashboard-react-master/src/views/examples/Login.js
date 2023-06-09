@@ -14,7 +14,8 @@ import {
 } from "reactstrap";
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
-import React, { useState } from "react";
+import React, { useState,useContext,useEffect } from "react";
+import { LoginDataContext } from "./LoginDataContext";
 
 const Login = () => {
   const [userID, setUserID] = useState("");
@@ -22,6 +23,8 @@ const Login = () => {
   const [userType, setUserType] = useState("");
   const [error, setError] = useState('');
   const history = useHistory();
+
+  const { setLoginData } = useContext(LoginDataContext);
 
   const handleUserIDChange = (e) => {
     setUserID(e.target.value);
@@ -31,6 +34,8 @@ const Login = () => {
     setUserPassword(e.target.value);
   };
 
+  
+
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -39,6 +44,7 @@ const Login = () => {
       try {
         const adminID = userID;
         const adminPwd = userPassword;
+        
         const newLog = {
           adminID,
           adminPwd
@@ -46,15 +52,17 @@ const Login = () => {
         console.log(newLog);
 
         const response = await axios.post("http://localhost:8070/Admin/login", newLog);
+        
+        
 
         if (response && response.data && response.data.token) {
           const { token } = response.data;
-
-          // Store the token in local storage or state for future requests
-          // Example: localStorage.setItem('token', token);
-
-          // Redirect the user to the dashboard or protected route
+          const userName="Admin";
+          setLoginData({ userID, userName });
+          
+         
           history.push('/admin/index');
+
         } else {
           setError('Invalid response format');
         }
@@ -79,15 +87,16 @@ const Login = () => {
         console.log(newLog);
 
         const response = await axios.post("http://localhost:8070/RiskOwner/login", newLog);
+        
 
         if (response && response.data && response.data.token) {
           const { token } = response.data;
-
-          // Store the token in local storage or state for future requests
-          // Example: localStorage.setItem('token', token);
-
-          // Redirect the user to the dashboard or protected route
+          const name = await axios.get(`http://localhost:8070/RiskOwner/name/${riskOwnerID}`);
+          const userName=name.data.riskOwnerName;
+          setLoginData({ userID, userName });
           history.push('/riskOwner/index');
+
+          
         } else {
           setError('Invalid response format');
         }
@@ -115,11 +124,10 @@ const Login = () => {
 
         if (response && response.data && response.data.token) {
           const { token } = response.data;
-
-          // Store the token in local storage or state for future requests
-          // Example: localStorage.setItem('token', token);
-
-          // Redirect the user to the dashboard or protected route
+          const name = await axios.get(`http://localhost:8070/Governance/name/${governanceID}`);
+          const userName=name.data.governanceName;
+          
+          setLoginData({ userID, userName });
           history.push('/governance/index');
         } else {
           setError('Invalid response format');
@@ -134,7 +142,9 @@ const Login = () => {
     }
   }
   return (
+    
     <>
+   
       <Col lg="5" md="7">
         <Card className="bg-secondary shadow border-0">
           <CardHeader className="bg-transparent pb-5"></CardHeader>
@@ -227,6 +237,7 @@ const Login = () => {
         </Row>
       </Col>
     </>
+    
   );
 };
 

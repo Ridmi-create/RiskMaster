@@ -16,8 +16,20 @@ import {
   Container,
   Media
 } from "reactstrap";
+import { LoginDataContext } from "views/examples/LoginDataContext";
+import React, { useState,useContext } from "react";
+
+/*useEffect(() => {
+  const params = new URLSearchParams(location.search);
+  const departmentCode = params.get('departmentCode');
+  setDepartmentCode(departmentCode);
+  setDepartmentName(departmentName);
+}, [location.search]);*/
 
 const AdminNavbar = (props) => {
+  const { loginData } = useContext(LoginDataContext);
+  const [userName, setUserName] = useState(loginData.userName);
+
   return (
     <>
       <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
@@ -39,8 +51,8 @@ const AdminNavbar = (props) => {
                     />
                   </span>
                   <Media className="ml-2 d-none d-lg-block">
-                    <span className="mb-0 text-sm font-weight-bold">
-                      Jessica Jones
+                    <span className="mb-0 text-sm font-weight-bold" style={{ fontSize: '40px' }}>
+                      {userName}
                     </span>
                   </Media>
                 </Media>
