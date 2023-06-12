@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
+import axios from "axios";
 import Datepicker from "../../assets/Datepicker.js";
 import {
   Button,
@@ -19,37 +20,17 @@ import {
   Table,
 } from "reactstrap";
 
-const ReportsModal = ({ isOpen, toggle }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const ReportsModal = ({ isOpen, toggle,selectedID,toggleModal }) => {
+  const [rgsDate, setRGSDate] = useState("");
+  const [idnRisk, setIdnRisk] = useState("");
+  const [idnImpLike, setIdnImplike] = useState("");
+  const [idnKpiKri, setIdnKpiKri] = useState("");
+  const [mitigationTimeline, setMitigationTimeline] = useState("");
+  const [rgsValue, setRGSValue] = useState("");
+  const [remarks, setRemarks] = useState("");
+  
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
-
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Add your logic for submitting the form
-    console.log("Email:", email);
-    console.log("Password:", password);
-    // Reset the form fields
-    setEmail("");
-    setPassword("");
-    // Close the modal
-    toggle();
-  };
-
-  const [estimatedEndDate, setEstimatedEndDate] = useState(null);
-
-  const handleEstimatedEndDateChange = (date) => {
-    setEstimatedEndDate(date);
-  };
-
-  const [selectedStatus, setSelectedStatus] = useState("");
+  
 
   function getBackgroundColor(value) {
     if (value >= 4.25) {
@@ -60,6 +41,33 @@ const ReportsModal = ({ isOpen, toggle }) => {
       return 'red';
     }
   };
+
+  //Fetch RGS
+  useEffect(() => {
+    const fetchRGS = async () => {
+      try {
+        const response = await fetch(`http://localhost:8070/RGS/get/${selectedID}`); // Replace '/api/riskOwners' with your actual API endpoint to fetch risk owners
+        const data = await response.json();
+        console.log(data);
+        
+        setRGSDate(data.rgsDate);
+        setIdnRisk(data.idnRisk);
+        setIdnImplike(data.idnImpLike);
+        setIdnKpiKri(data.idnKpiKri);
+        setMitigationTimeline(data.mitigationTimeline);
+        setRGSValue(data.rgsValue);
+        setRemarks(data.remarks);
+
+      } catch (error) {
+        console.error('Error fetching risk owners:', error);
+      }
+      //const rgsDate = RGSs.rgsDate;
+      //console.log(rgsDate); // Output: John Doe
+
+    };
+
+    fetchRGS();
+  }, []);
 
   return (
     <Modal
@@ -80,9 +88,9 @@ const ReportsModal = ({ isOpen, toggle }) => {
               <Row>
                 <div className="col">
                   <CardTitle className="text-muted mb-0">
-                    RGS Date : 25/02/2023
+                    RGS Date : {rgsDate}
                   </CardTitle>
-                  <span className="h3 font-weight-bold mb-0">Risk Governance Score : 5</span>
+                  <span className="h3 font-weight-bold mb-0">Risk Governance Score : {rgsValue}</span>
                 </div>
               </Row>
             </CardBody>
@@ -113,31 +121,31 @@ const ReportsModal = ({ isOpen, toggle }) => {
                 <th>Identifying Probabale Risks</th>
                 <td className="text-center">20%</td>
                 <td className="text-center">5</td>
-                <td className="text-center">1</td>
+                <td className="text-center">{idnRisk}</td>
                 </tr>
                 <tr>
                 <th>Identification of Imp & Likelihood</th>
                 <td className="text-center">10%</td>
                 <td className="text-center">5</td>
-                <td className="text-center">0.5</td>
+                <td className="text-center">{idnImpLike}</td>
                 </tr>
                 <tr>
                 <th>Identification of KPI & KRI</th>
                 <td className="text-center">30%</td>
                 <td className="text-center">5</td>
-                <td className="text-center">1.5</td>
+                <td className="text-center">{idnKpiKri}</td>
                 </tr>
                 <tr>
                 <th>Appropriate mitigations & timeline</th>
                 <td className="text-center">40%</td>
                 <td className="text-center">5</td>
-                <td className="text-center">2</td>
+                <td className="text-center">{mitigationTimeline}</td>
                 </tr>
                 <tr>
                 <th style={{ color: 'darkblue' }}><h4>Risk Governance Score</h4></th>
                 <td></td>
                 <td></td>
-                <td className="text-center" style={{ backgroundColor: getBackgroundColor(1.5) }}><h4>5</h4></td>
+                <td className="text-center" style={{ backgroundColor: getBackgroundColor(rgsValue) }}><h4>{rgsValue}</h4></td>
                 </tr>
                       
                 </tbody>
@@ -155,7 +163,7 @@ const ReportsModal = ({ isOpen, toggle }) => {
                     id="longTextArea"
                     type="textarea"
                     rows={2}
-                    placeholder="Timeline Exceeded"
+                    placeholder={remarks}
                     disabled
                     />
                 </FormGroup>

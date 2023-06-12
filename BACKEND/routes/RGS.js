@@ -3,6 +3,7 @@ let RGS = require("../models/RGS");
 
 //add new rgs
 router.route("/add").post((req,res)=>{
+    console.log("came to add rgs")
     const rgsID = req.body.rgsID;
     const idnRisk = req.body.idnRisk;
     const idnImpLike = req.body.idnImpLike;
@@ -42,8 +43,9 @@ router.route("/").get((req,res)=>{
 })
 
 //update a rgs by id
-router.route("/update/:id").put(async(req,res)=>{
-    let rgsId = req.params.id;
+router.route("/update/:rgsID").put(async(req,res)=>{
+    
+    let rgsId = req.params.rgsID;
     //destucture method
     const {rgsID,idnRisk,idnImpLike,idnKpiKri,mitigationTimeline,rgsDate,rgsValue,remarks, departmentCode} = req.body;
 
@@ -79,16 +81,38 @@ router.route("/delete/:id").delete(async(req,res)=>{
 })
 
 //get one rgs
-router.route("/get/:id").get(async(req,res)=>{
-    let rgsId = req.params.id;
-    const RGS = RGS.findById(rgsId).then((RGSs)=>{
-        res.status(200).send({status : "RGS fetched", RGS : RGSs});
-    }).catch((err)=>{
-        console.log(err);
-        res.status(500).send({status : "Error with get RGS", error : err.message});
-    })
+router.route("/get/:rgsID").get(async(req,res)=>{
+    console.log("Came get rgsID")
+    let rgsId = req.params.rgsID;
+    const query = {rgsID: rgsId};
+    const riskOwner = await RGS.findOne(query);
+      res.json(riskOwner);
 })
 
-
+//get last record
+const getLastAddedRGSID = async () => {
+    try {
+      const lastAddedRecord = await RGS.findOne({}, { rgsID: 1 }).sort({ _id: -1 });
+      if (lastAddedRecord) {
+        const lastAddedRGSID = lastAddedRecord.rgsID;
+        const numericPart = parseInt(lastAddedRGSID.substring(1));
+        const newNumericPart = numericPart + 1;
+        const newId = `S${String(newNumericPart).padStart(3, '0')}`;
+        return newId;
+      }
+      return 'No records found.';
+    } catch (error) {
+      throw new Error('Error fetching last added riskOwnerID:', error);
+    }
+  };
+  
+  router.route('/getId').get(async (req,res) => {
+    try {
+      const lastAddedRGSID = await getLastAddedRGSID();
+      res.json(lastAddedRGSID);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
 
 module.exports = router;

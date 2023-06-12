@@ -21,21 +21,35 @@ import { LoginDataContext } from "./LoginDataContext";
 
 
 
+
 const MyRisks = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [risks, setRisks] = useState([]);
   const { loginData } = useContext(LoginDataContext);
   const [riskOwnerID, setRiskOwnerID] = useState(loginData.userID);
-  const [userName, setUserName] = useState(loginData.userName);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
 
+  /*useEffect(() => {
+    // Retrieve the token from local storage
+    const token = localStorage.getItem("token");
+
+    // Decode the token to extract the riskOwnerID
+    if (token) {
+      const decodedToken = jwt.decode(token);
+      const decodedRiskOwnerID = decodedToken?.riskOwnerID;
+
+      // Set the riskOwnerID in the state
+      setRiskOwnerID(decodedRiskOwnerID);
+    }
+  }, []);*/
+
   //Fetch Risk 
   useEffect(() => {
     console.log("came");
-    console.log(userName);
+    console.log(riskOwnerID);
     const fetchRisks = async () => {
       try {
         const response = await fetch(`http://localhost:8070/Risk/getR/${riskOwnerID}`);
@@ -51,9 +65,6 @@ const MyRisks = () => {
 
     fetchRisks();
   }, []);
-
-
-
 
   return (
     <>

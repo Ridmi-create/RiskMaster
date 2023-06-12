@@ -142,7 +142,31 @@ router.route("/getR/:riskOwnerID").get(async (req, res) => {
     }
   });
   
+  //get last record
+const getLastAddedRiskCode = async () => {
+    try {
+      const lastAddedRecord = await Risk.findOne({}, { riskCode: 1 }).sort({ _id: -1 });
+      if (lastAddedRecord) {
+        const lastAddedRiskCode = lastAddedRecord.riskCode;
+        const numericPart = parseInt(lastAddedRiskCode.substring(2));
+        const newNumericPart = numericPart + 1;
+        const newId = `RC${String(newNumericPart).padStart(3, '0')}`;
+        return newId;
+      }
+      return 'No records found.';
+    } catch (error) {
+      throw new Error('Error fetching last added riskOwnerID:', error);
+    }
+  };
   
+  router.route('/getId').get(async (req,res) => {
+    try {
+      const lastAddedRiskCode = await getLastAddedRiskCode();
+      res.json(lastAddedRiskCode);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
   
   
 

@@ -1,5 +1,4 @@
-import React, { useState,useEffect } from "react";
-import Datepicker from "../../assets/Datepicker.js";
+import React, { useState,useEffect,useContext } from "react";
 import axios from "axios";
 import {
   Button,
@@ -16,19 +15,23 @@ import {
   InputGroupAddon,
   InputGroupText
 } from "reactstrap";
+import { LoginDataContext } from "views/examples/LoginDataContext.js";
 
 const AddNewRiskModal = ({ isOpen, toggle }) => {
   const [riskCode, setRiskCode] = useState("");
   const [project, setProject] = useState("");
   const [specificRisk, setSpecificRisk] = useState("");
   const [riskRating, setRiskRating] = useState("");
+  const [reportedDate, setReportedDate] = useState("");
+  const [estimatedEndDate, setEstimatedEndDate] = useState("");
   const [impact, setImpact] = useState("");
   const [likelihood, setLikelihood] = useState("");
   const [status, setStatus] = useState("");
   const [KpiKri, setKpiKri] = useState("");
   const [actionPlan, setActionPlan] = useState("");
-  const [riskOwnerID, setRiskOwnerID] = useState("");
-  const [departmentCode, setDepartmentCode] = useState("");
+  const { loginData } = useContext(LoginDataContext);
+  const [riskOwnerID, setRiskOwnerID] = useState(loginData.userID);
+  const [departmentCode, setDepartmentCode] = useState(loginData.departmentCode);
   
     useEffect(() => {
       const response = axios.get("http://localhost:8070/Risk/getId");
@@ -43,14 +46,6 @@ const AddNewRiskModal = ({ isOpen, toggle }) => {
       });
     }, []);
 
-    const calculateRiskRating = () => {
-      const impact = document.getElementById('impact');
-      const likelihood = document.getElementById('likelihood');
-      const impactValue = parseInt(impact.value);
-      const likelihoodValue = parseInt(likelihood.value);
-      const calculatedRiskRating = impactValue * likelihoodValue;
-      setRiskRating(calculatedRiskRating);
-    };
 
 
   const handleSubmit = (e) => {
@@ -72,19 +67,7 @@ const AddNewRiskModal = ({ isOpen, toggle }) => {
     const addRisk = axios.post("http://localhost:8070/Risk/add",newRisk);
   };
 
-  const [reportedDate, setReportedDate] = useState(null);
-
-  const handleDateChange = (date) => {
-    setReportedDate(date);
-  };
-
-  const [estimatedEndDate, setEstimatedEndDate] = useState(null);
-
-  const handleEstimatedEndDateChange = (date) => {
-    setEstimatedEndDate(date);
-  };
-
-  const [selectedStatus, setSelectedStatus] = useState("");
+  
 
   return (
 
@@ -94,6 +77,7 @@ const AddNewRiskModal = ({ isOpen, toggle }) => {
       size="sm"
       isOpen={isOpen}
       toggle={toggle}
+      onSubmit={handleSubmit}
     >
       <div className="modal-body p-0">
         <Card className="bg-secondary shadow border-0">
@@ -127,6 +111,8 @@ const AddNewRiskModal = ({ isOpen, toggle }) => {
                       id="project"
                       placeholder="Eg : Web App"
                       type="text"
+                      value={project}
+                      onChange={(e) => setProject(e.target.value)}
                     />
                   </FormGroup>
                 </Col>
@@ -141,6 +127,8 @@ const AddNewRiskModal = ({ isOpen, toggle }) => {
                     type="textarea"
                     rows={3}
                     placeholder="Define the Risk here.. Eg : Resource Unavailability"
+                    value={specificRisk}
+                    onChange={(e) => setSpecificRisk(e.target.value)}
                     />
                 </FormGroup>
                 </Col>
@@ -148,15 +136,15 @@ const AddNewRiskModal = ({ isOpen, toggle }) => {
                 <Row>
                 <Col md="6">
                 <FormGroup>
-                    <span className="text-nowrap">Risk Reported Date:</span>
-                    <InputGroup className="input-group-alternative">
-                    <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                        <i className="ni ni-calendar-grid-58" />
-                    </InputGroupText>
-                    </InputGroupAddon>
-                    <Datepicker onDateChange={handleDateChange} />
-                    </InputGroup>
+                  <span className="text-nowrap">Risk Reported Date:</span>
+                    <Input
+                    className="form-control-alternative"
+                    id="reportedDate"
+                    type="text"
+                    placeholder="Ex : 2023/05/15"
+                    value={reportedDate}
+                    onChange={(e) => setReportedDate(e.target.value)}
+                    />
                 </FormGroup>
                 </Col>
                 <Col md="6">
@@ -167,6 +155,8 @@ const AddNewRiskModal = ({ isOpen, toggle }) => {
                       id="KpiKri"
                       placeholder="Eg : On Time Delivery"
                       type="text"
+                      value={KpiKri}
+                      onChange={(e) => setKpiKri(e.target.value)}
                     />
                   </FormGroup>
                 </Col>
@@ -175,37 +165,39 @@ const AddNewRiskModal = ({ isOpen, toggle }) => {
                 <Col md="4">
                   <FormGroup>
                   <span className="text-nowrap">Impact: </span>
-                  <Input className="form-control-alternative" type="select" id="impact">
-                        <option value="">Select Value</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                  </Input>
-                  </FormGroup>
-                </Col>
-                <Col md="4">
-                  <FormGroup>
-                    <span className="text-nowrap">Likelihood: </span>
-                    <Input className="form-control-alternative" type="select" id="likelihood">
-                        <option value="">Select Value</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                  </Input>
-                  </FormGroup>
-                </Col>
-                <Col md="4">
-                  <FormGroup>
-                    <span className="text-nowrap">RiskRating: </span>
                     <Input
                       className="form-control-alternative"
-                      disabled
+                      id="impact"
+                      placeholder="Ex : 1"
+                      type="text"
+                      value={impact}
+                      onChange={(e) => setImpact(e.target.value)}
+                    />
+                  </FormGroup>
+                </Col>
+                <Col md="4">
+                  <FormGroup>
+                  <span className="text-nowrap">Likelihood: </span>
+                    <Input
+                      className="form-control-alternative"
+                      id="likelihood"
+                      placeholder="Ex : 2"
+                      type="text"
+                      value={likelihood}
+                      onChange={(e) => setLikelihood(e.target.value)}
+                    />
+                  </FormGroup>
+                </Col>
+                <Col md="4">
+                  <FormGroup>
+                  <span className="text-nowrap">Risk Rating : </span>
+                    <Input
+                      className="form-control-alternative"
                       id="riskRating"
-                      placeholder="will update"
+                      placeholder="Impact*Likelihood"
                       type="text"
                       value={riskRating}
+                      onChange={(e) => setRiskRating(e.target.value)}
                     />
                   </FormGroup>
                 </Col>
@@ -220,6 +212,8 @@ const AddNewRiskModal = ({ isOpen, toggle }) => {
                     type="textarea"
                     rows={3}
                     placeholder="Define mitigation action plan here.. Eg : Plan discussion with team"
+                    value={actionPlan}
+                    onChange={(e) => setActionPlan(e.target.value)}
                     />
                 </FormGroup>
                 </Col>
@@ -227,29 +221,29 @@ const AddNewRiskModal = ({ isOpen, toggle }) => {
                 <Row>
                 <Col md="6">
                 <FormGroup>
-                    <span className="text-nowrap">Estimated End Date:</span>
-                    <InputGroup className="input-group-alternative">
-                    <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                        <i className="ni ni-calendar-grid-58" />
-                    </InputGroupText>
-                    </InputGroupAddon>
-                    <Datepicker onDateChange={handleEstimatedEndDateChange} />
-                    </InputGroup>
+                  <span className="text-nowrap">Estimated End Date:</span>
+                    <Input
+                    className="form-control-alternative"
+                    id="estimatedEndDate"
+                    type="text"
+                    placeholder="Ex : 2023/05/15"
+                    value={estimatedEndDate}
+                    onChange={(e) => setEstimatedEndDate(e.target.value)}
+                    />
                 </FormGroup>
                 </Col>
                 <Col md="6">
                   <FormGroup>
                     <span className="text-nowrap">Status: </span>
                     <Input className={`form-control-alternative ${
-                        selectedStatus === "completed"
+                        status === "completed"
                           ? "bg-green"
-                          : selectedStatus === "wip"
+                          : status === "wip"
                           ? "bg-yellow"
                           : ""
                       }`} type="select" 
-                      value={selectedStatus}
-                      onChange={(e) => setSelectedStatus(e.target.value)}>
+                      value={status}
+                      onChange={(e) => setStatus(e.target.value)}>
                         <option value="">Select Status</option>
                         <option value="completed">Completed </option>
                         <option value="wip">WIP</option>

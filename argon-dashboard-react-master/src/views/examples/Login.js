@@ -93,7 +93,8 @@ const Login = () => {
           const { token } = response.data;
           const name = await axios.get(`http://localhost:8070/RiskOwner/name/${riskOwnerID}`);
           const userName=name.data.riskOwnerName;
-          setLoginData({ userID, userName });
+          const departmentCode=name.data.departmentCode;
+          setLoginData({ userID, userName,departmentCode });
           history.push('/riskOwner/index');
 
           

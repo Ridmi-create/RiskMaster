@@ -43,26 +43,7 @@ const MyRisksHeader = () => {
                         </FormGroup>
                         </Col>
                       
-                        <Col md="5">
-                        <FormGroup className="d-flex align-items-center">  
-                            <span className="text-nowrap mr-2">Project/Function :</span>                        
-                            <Input
-                                className="form-control-alternative"
-                                placeholder="Web Application"
-                                type="text"
-                            />
-                        </FormGroup>
-                        </Col>
-                        <Col md="4">
-                        <FormGroup className="d-flex align-items-center">  
-                            <span className="text-nowrap mr-2">Risk :</span>                        
-                            <Input
-                                className="form-control-alternative"
-                                placeholder="Resource availibility"
-                                type="text"
-                            />
-                        </FormGroup>
-                        </Col>
+                        
                     </Row>
                     <Row className="justify-content-end">
                         <Col md="2">

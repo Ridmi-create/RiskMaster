@@ -22,47 +22,32 @@ import ReportsModal from "components/Modals/ReportsModal.js";
 
 const Reports = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [riskOwners, setRiskOwners] = useState([]);
-  const [userType, setUserType]=useState([]);
-  const [riskGovernance, setRiskGovernance] = useState([]);
+  const [RGSs, setRGSs] = useState([]);
+  const [selectedID, setSelectedID] = useState("");
 
-  const toggleModal = () => {
+  const toggleModal = (id) => {
+    setSelectedID(id);
     setIsModalOpen(!isModalOpen);
   };
 
-  //Fetch Risk Ownwrs
+  //Fetch RGSs
   useEffect(() => {
-    const fetchRiskOwners = async () => {
+    const fetchRGSs = async () => {
       try {
-        const response = await fetch('http://localhost:8070/RiskOwner'); // Replace '/api/riskOwners' with your actual API endpoint to fetch risk owners
+        const response = await fetch('http://localhost:8070/RGS'); // Replace '/api/riskOwners' with your actual API endpoint to fetch risk owners
         const data = await response.json();
-        setRiskOwners(data);
+        setRGSs(data);
       } catch (error) {
         console.error('Error fetching risk owners:', error);
       }
-      const riskOwnerName = riskOwners.riskOwnerName;
-      console.log(riskOwnerName); // Output: John Doe
+      const rgsDate = RGSs.rgsDate;
+      console.log(rgsDate); // Output: John Doe
 
     };
 
-    fetchRiskOwners();
+    fetchRGSs();
   }, []);
-
-  //Fetch Risk Governance
-  useEffect(() => {
-    const fetchRiskGovernance = async () => {
-      try {
-        const response = await fetch('http://localhost:8070/Governance'); // Replace '/api/riskOwners' with your actual API endpoint to fetch risk owners
-        const data = await response.json();
-        setRiskGovernance(data);
-      } catch (error) {
-        console.error('Error fetching risk owners:', error);
-      }
-    };
-
-    fetchRiskGovernance();
-  }, []); 
-
+ 
 
   return (
     <>
@@ -89,11 +74,11 @@ const Reports = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {riskOwners.map((riskOwner) => (
-                    <tr key={riskOwner.riskOwnerID}>
-                      <td>{riskOwner.riskOwnerID}</td>
-                      <td>{riskOwner.riskOwnerMail}</td>
-                      <td>{riskOwner.riskOwnerPhone}</td>
+                {RGSs.map((RGS) => (
+                    <tr key={RGS.rgsID}>
+                      <td>{RGS.rgsDate}</td>
+                      <td>{RGS.rgsValue}</td>
+                      <td>{RGS.remarks}</td>
                       <td className="text-right">
                         <UncontrolledDropdown>
                           <DropdownToggle
@@ -107,15 +92,15 @@ const Reports = () => {
                             <i className="fas fa-ellipsis-v" />
                           </DropdownToggle>
                           <DropdownMenu className="dropdown-menu-arrow" right>
-                            <DropdownItem href="#pablo" onClick={toggleModal}>
-                              Show Details
+                            <DropdownItem href="#pablo" onClick={() =>toggleModal(RGS.rgsID)}>
+                              Show Details 
                             </DropdownItem>
+                          
                           </DropdownMenu>
                         </UncontrolledDropdown>
                       </td>
-                    </tr>
+                      </tr>
                   ))}
-
                 </tbody>
                 {isModalOpen && (
                   <ReportsModal isOpen={isModalOpen} toggle={toggleModal} />
@@ -125,6 +110,14 @@ const Reports = () => {
           </div>
         </Row>
       </Container>
+      {isModalOpen && (
+      <ReportsModal
+          isOpen={isModalOpen}
+          toggle={toggleModal}
+          selectedID={selectedID}
+          toggleModal={toggleModal} 
+        />
+        )}
     </>
   );
 
